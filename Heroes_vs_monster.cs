@@ -84,12 +84,11 @@ namespace Proyecto
                     // ************************** Creación personajes según dificultad **************************
                     if (difficultyDecision == PersonalizedMode)
                     {
-                        //
+
                     }
 
                     else
                     {
-                        //
 
                         // Cambiar dificultad para adaptarla a las stats del monstruo
                         if (difficultyDecision == EasyMode)
@@ -102,8 +101,24 @@ namespace Proyecto
                         }
                         //
                     }
-                }
 
+                    // ************************** Guardar atributos originales en otras variables **************************
+                    ogArcherHealth = archerHealth;
+                    ogArcherDefense = archerDefense;
+                    ogBarbarianHealth = barbarianHealth;
+                    ogBarbarianDefense = barbarianDefense;
+                    ogMageHealth = mageHealth;
+                    ogMageDefense = mageDefense;
+                    ogDruidHealth = druidHealth;
+                    ogDruidDefense = druidDefense;
+
+                    // ************************** Nombres de los personajes **************************
+                    do
+                    {
+                        correctNameCreation = CharacterCreation.GetCharactersNames(ref archerName, ref barbarianName, ref mageName, ref druidName);
+
+                    } while (!correctNameCreation);
+                }
             }
 
             if (tries == 0)

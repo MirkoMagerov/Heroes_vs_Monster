@@ -58,7 +58,48 @@ namespace MonstersVsHeroesUtils
 
     public class CharacterCreation
     {
+        public static string CapitalizeFirstLetter(string word)
+        {
+            return $"{word[0].ToString().ToUpper()}{word.Substring(1).ToLower()}";
+        }
 
+        public static bool GetCharactersNames(ref string archerName, ref string barbName, ref string mageName, ref string druidName)
+        {
+            string userInput;
+            string[] separatedNames;
+
+            Console.Write("Introduce 4 nombres separados por comas.\nSe asignarán a los personajes en este orden: Arquera, Bárbaro, Maga, Druida.\nEscribe aqui: ");
+
+            userInput = Console.ReadLine() ?? "";
+            userInput = userInput.Replace(" ", "");
+            separatedNames = userInput.Split(',');
+
+            for (int i = 0; i < separatedNames.Length; i++)
+            {
+                separatedNames[i] = CapitalizeFirstLetter(separatedNames[i]);
+
+                switch (i)
+                {
+                    case 0:
+                        archerName = separatedNames[i];
+                        break;
+
+                    case 1:
+                        barbName = separatedNames[i];
+                        break;
+
+                    case 2:
+                        mageName = separatedNames[i];
+                        break;
+
+                    case 3:
+                        druidName = separatedNames[i];
+                        break;
+                }
+            }
+
+            return separatedNames.Length == 4;
+        }
     }
 
     public class RandomChances
