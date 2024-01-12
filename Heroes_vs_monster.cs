@@ -84,11 +84,19 @@ namespace Proyecto
                     // ************************** Creación personajes según dificultad **************************
                     if (difficultyDecision == PersonalizedMode)
                     {
-
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexArcher, ref archerHealth, ref archerAttack, ref archerDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexBarbarian, ref barbarianHealth, ref barbarianAttack, ref barbarianDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMage, ref mageHealth, ref mageAttack, ref mageDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexDruid, ref druidHealth, ref druidAttack, ref druidDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMonster, ref monsterHealth, ref monsterAttack, ref monsterDefense);
                     }
 
                     else
                     {
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexArcher, difficultyDecision, random, ref archerHealth, ref archerAttack, ref archerDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexBarbarian, difficultyDecision, random, ref barbarianHealth, ref barbarianAttack, ref barbarianDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMage, difficultyDecision, random, ref mageHealth, ref mageAttack, ref mageDefense);
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexDruid, difficultyDecision, random, ref druidHealth, ref druidAttack, ref druidDefense);
 
                         // Cambiar dificultad para adaptarla a las stats del monstruo
                         if (difficultyDecision == EasyMode)
@@ -99,7 +107,8 @@ namespace Proyecto
                         {
                             difficultyDecision = EasyMode;
                         }
-                        //
+
+                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMonster, difficultyDecision, random, ref monsterHealth, ref monsterAttack, ref monsterDefense);
                     }
 
                     // ************************** Guardar atributos originales en otras variables **************************
