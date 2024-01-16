@@ -127,6 +127,99 @@ namespace Proyecto
                         correctNameCreation = CharacterCreation.GetCharactersNames(ref archerName, ref barbarianName, ref mageName, ref druidName);
 
                     } while (!correctNameCreation);
+
+                    while (monsterHealth > 0 && (archerHealth > 0 || barbarianHealth > 0 || mageHealth > 0 || druidHealth > 0))
+                    {
+                        Console.Clear();
+                        // ************************** Sistema de turnos **************************
+                        turnOrder = MenuDecisions.GetRandomTurnOrder(random, IndexArcher, IndexBarbarian, IndexMage, IndexDruid);
+
+                        for (int i = 0; i < turnOrder.Length; i++)
+                        {
+                            Console.WriteLine(ProgramFlowHelpers.CharacterIndexToNameConverter(turnOrder[i], archerName, barbarianName, mageName, druidName));
+                            int turnDecision = MenuDecisions.GetTurnDecision(ref tries);
+                            // Pasar turno si se equivoca 3 veces en elegir opción
+                            if (tries > 0)
+                            {
+                                tries = 3;
+                                switch (turnDecision)
+                                {
+                                    // Ataque
+                                    case 2:
+                                        TurnOptions.Attack(ProgramFlowHelpers.GetActualAttackValue(turnOrder[i], archerAttack, barbarianAttack, mageAttack, druidAttack), ref monsterHealth, random, monsterDefense);
+                                        break;
+
+                                    // Defensa
+                                    case 1:
+                                        TurnOptions.Defense(turnOrder[i], ref archerDefense, ref barbarianDefense, ref mageDefense, ref druidDefense);
+                                        break;
+
+                                    // Habilidad especial
+                                    case 0:
+                                        switch (turnOrder[i])
+                                        {
+                                            case 0:
+                                                if (archerCooldown == 0)
+                                                {
+                                                    SpecialAbilities.ArcherAbility(ref monsterKnockout);
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("On Cooldown");
+                                                }
+                                                break;
+
+                                            case 1:
+                                                if (barbarianCooldown == 0)
+                                                {
+                                                    SpecialAbilities.BarbarianAbility(ref barbarianInvulnerability);
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("On Cooldown");
+                                                }
+                                                break;
+
+                                            case 2:
+                                                if (mageCooldown == 0)
+                                                {
+                                                    SpecialAbilities.MageAbility(mageAttack, ref monsterHealth);
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("On Cooldown");
+                                                }
+                                                break;
+
+                                            case 3:
+                                                if (druidCooldown == 0)
+                                                {
+                                                    SpecialAbilities.DruidAbility(ref archerHealth, ogArcherHealth, ref barbarianHealth, ogBarbarianHealth, ref mageHealth, ogMageHealth, ref druidHealth, ogDruidHealth);
+                                                }
+                                                else
+                                                {
+                                                    Console.WriteLine("On Cooldown");
+                                                }
+                                                break;
+                                        }
+                                        break;
+                                }
+                                Console.WriteLine("******************");
+                                Console.WriteLine($"Estadisticas arquera: {archerHealth} | {archerDefense} | {archerCooldown}");
+                                Console.WriteLine($"Estadisticas barbaro: {barbarianHealth} | {barbarianDefense} | {barbarianCooldown}");
+                                Console.WriteLine($"Estadisticas maga: {mageHealth} | {mageDefense} | {mageCooldown}");
+                                Console.WriteLine($"Estadisticas druida: {druidHealth} | {druidDefense} | {druidCooldown}");
+                                Console.WriteLine($"Estadisticas monstruo: {monsterHealth}");
+                                Console.WriteLine("******************");
+                                Console.WriteLine();
+                            }
+                        }
+
+                        ProgramFlowHelpers.MonsterTurn(ref archerHealth, archerDefense, ref barbarianHealth, barbarianDefense, ref mageHealth, mageDefense, ref druidHealth, druidDefense, barbarianInvulnerability, monsterAttack);
+
+                        ProgramFlowHelpers.DecreaseTurnVariables(ref monsterKnockout, ref barbarianInvulnerability, ref archerCooldown, ref barbarianCooldown, ref mageCooldown, ref druidCooldown);
+                        ProgramFlowHelpers.RestoreDefenseValues(ref archerDefense, ogArcherDefense, ref barbarianDefense, barbarianInvulnerability, ogBarbarianDefense, ref mageDefense, ogMageDefense, ref druidDefense, ogDruidDefense);
+                    }
                 }
             }
 

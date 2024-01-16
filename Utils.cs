@@ -208,18 +208,18 @@ namespace MonstersVsHeroesUtils
 
     public class TurnOptions
     {
-        public static void Attack(double attackDamage, ref double monsterHealth, Random random)
+        public static void Attack(double attackDamage, ref double monsterHealth, Random random, double monsterDefense)
         {
             const int doubleAttack = 2;
 
-            if (!IsMissedAttack(random))
+            if (!RandomChances.IsMissedAttack(random))
             {
-                if (IsCriticAttac(random))
+                if (RandomChances.IsCriticAttac(random))
                 {
                     attackDamage *= doubleAttack;
                     Console.WriteLine("Double damage");
                 }
-                monsterHealth -= attackDamage;
+                monsterHealth -= Math.Round(attackDamage - (attackDamage * monsterDefense) / 100.0, 2);
             }
             else
             {
