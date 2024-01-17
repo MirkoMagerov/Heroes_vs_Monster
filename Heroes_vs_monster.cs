@@ -1,12 +1,9 @@
-/*
-* Author: Miroslav Magerov
-* M03. Programació UF2
-* v1. dd/mm/aa
-* Exercici Modular - Heroes vs Monster.
-*/
-using MonstersVsHeroesUtils;
+using HeroesVsMonster_CharactersCreation;
+using HeroesVsMonster_GeneralUtils;
+using HeroesVsMonster_MenuOptions;
+using HeroesVsMonster_TurnOptions;
 
-namespace Proyecto
+namespace HeroesVsMonster
 {
     public static class ConsoleApp
     {
@@ -49,7 +46,7 @@ namespace Proyecto
             double mageHealth = 0, mageAttack = 0, mageDefense = 0;
             double druidHealth = 0, druidAttack = 0, druidDefense = 0;
             double monsterHealth = 0, monsterAttack = 0, monsterDefense = 0;
-            // Variables para guardar la vida original de los personajes y stats importantes
+            // Store original health and defense so we can restore them to the default value
             double ogArcherHealth, ogBarbarianHealth, ogMageHealth, ogDruidHealth, ogArcherDefense, ogBarbarianDefense, ogMageDefense, ogDruidDefense;
 
             int[] turnOrder;
@@ -66,7 +63,7 @@ namespace Proyecto
             // ****************************** MAIN PROGRAM ******************************
 
             // Salir
-            if (!MenuDecisions.GetMainMenuDecision(ref tries))
+            if (!MenuOptions.GetMainMenuDecision(ref tries))
             {
                 // Despedida del juego
             }
@@ -75,7 +72,7 @@ namespace Proyecto
             else if (tries > 0)
             {
                 tries = 3;
-                difficultyDecision = MenuDecisions.GetDifficultyDecision(ref tries);
+                difficultyDecision = MenuOptions.GetDifficultyDecision(ref tries);
 
                 if (tries > 0)
                 {
@@ -84,19 +81,19 @@ namespace Proyecto
                     // ************************** Creación personajes según dificultad **************************
                     if (difficultyDecision == PersonalizedMode)
                     {
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexArcher, ref archerHealth, ref archerAttack, ref archerDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexBarbarian, ref barbarianHealth, ref barbarianAttack, ref barbarianDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMage, ref mageHealth, ref mageAttack, ref mageDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexDruid, ref druidHealth, ref druidAttack, ref druidDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMonster, ref monsterHealth, ref monsterAttack, ref monsterDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexArcher, ref archerHealth, ref archerAttack, ref archerDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexBarbarian, ref barbarianHealth, ref barbarianAttack, ref barbarianDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexMage, ref mageHealth, ref mageAttack, ref mageDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexDruid, ref druidHealth, ref druidAttack, ref druidDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexMonster, ref monsterHealth, ref monsterAttack, ref monsterDefense);
                     }
 
                     else
                     {
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexArcher, difficultyDecision, random, ref archerHealth, ref archerAttack, ref archerDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexBarbarian, difficultyDecision, random, ref barbarianHealth, ref barbarianAttack, ref barbarianDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMage, difficultyDecision, random, ref mageHealth, ref mageAttack, ref mageDefense);
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexDruid, difficultyDecision, random, ref druidHealth, ref druidAttack, ref druidDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexArcher, difficultyDecision, random, ref archerHealth, ref archerAttack, ref archerDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexBarbarian, difficultyDecision, random, ref barbarianHealth, ref barbarianAttack, ref barbarianDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexMage, difficultyDecision, random, ref mageHealth, ref mageAttack, ref mageDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexDruid, difficultyDecision, random, ref druidHealth, ref druidAttack, ref druidDefense);
 
                         // Cambiar dificultad para adaptarla a las stats del monstruo
                         if (difficultyDecision == EasyMode)
@@ -108,7 +105,7 @@ namespace Proyecto
                             difficultyDecision = EasyMode;
                         }
 
-                        CharacterCreation.CreateCompleteCharacter(allStatsRange, IndexMonster, difficultyDecision, random, ref monsterHealth, ref monsterAttack, ref monsterDefense);
+                        CharactersCreation.CreateCompleteCharacter(allStatsRange, IndexMonster, difficultyDecision, random, ref monsterHealth, ref monsterAttack, ref monsterDefense);
                     }
 
                     // ************************** Guardar atributos originales en otras variables **************************
@@ -124,7 +121,7 @@ namespace Proyecto
                     // ************************** Nombres de los personajes **************************
                     do
                     {
-                        correctNameCreation = CharacterCreation.GetCharactersNames(ref archerName, ref barbarianName, ref mageName, ref druidName);
+                        correctNameCreation = CharactersCreation.GetCharactersNames(ref archerName, ref barbarianName, ref mageName, ref druidName);
 
                     } while (!correctNameCreation);
 
@@ -132,12 +129,12 @@ namespace Proyecto
                     {
                         Console.Clear();
                         // ************************** Sistema de turnos **************************
-                        turnOrder = MenuDecisions.GetRandomTurnOrder(random, IndexArcher, IndexBarbarian, IndexMage, IndexDruid);
+                        turnOrder = MenuOptions.GetRandomTurnOrder(random, IndexArcher, IndexBarbarian, IndexMage, IndexDruid);
 
                         for (int i = 0; i < turnOrder.Length; i++)
                         {
-                            Console.WriteLine(ProgramFlowHelpers.CharacterIndexToNameConverter(turnOrder[i], archerName, barbarianName, mageName, druidName));
-                            int turnDecision = MenuDecisions.GetTurnDecision(ref tries);
+                            Console.WriteLine(GeneralUtils.CharacterIndexToNameConverter(turnOrder[i], archerName, barbarianName, mageName, druidName));
+                            int turnDecision = MenuOptions.GetTurnDecision(ref tries);
                             // Pasar turno si se equivoca 3 veces en elegir opción
                             if (tries > 0)
                             {
@@ -146,7 +143,7 @@ namespace Proyecto
                                 {
                                     // Ataque
                                     case 2:
-                                        TurnOptions.Attack(ProgramFlowHelpers.GetActualAttackValue(turnOrder[i], archerAttack, barbarianAttack, mageAttack, druidAttack), ref monsterHealth, random, monsterDefense);
+                                        TurnOptions.Attack(GeneralUtils.GetActualAttackValue(turnOrder[i], archerAttack, barbarianAttack, mageAttack, druidAttack), ref monsterHealth, random, monsterDefense);
                                         break;
 
                                     // Defensa
@@ -161,7 +158,7 @@ namespace Proyecto
                                             case 0:
                                                 if (archerCooldown == 0)
                                                 {
-                                                    SpecialAbilities.ArcherAbility(ref monsterKnockout);
+                                                    TurnOptions.ArcherAbility(ref monsterKnockout);
                                                 }
                                                 else
                                                 {
@@ -172,7 +169,7 @@ namespace Proyecto
                                             case 1:
                                                 if (barbarianCooldown == 0)
                                                 {
-                                                    SpecialAbilities.BarbarianAbility(ref barbarianInvulnerability);
+                                                    TurnOptions.BarbarianAbility(ref barbarianInvulnerability);
                                                 }
                                                 else
                                                 {
@@ -183,7 +180,7 @@ namespace Proyecto
                                             case 2:
                                                 if (mageCooldown == 0)
                                                 {
-                                                    SpecialAbilities.MageAbility(mageAttack, ref monsterHealth);
+                                                    TurnOptions.MageAbility(mageAttack, ref monsterHealth);
                                                 }
                                                 else
                                                 {
@@ -194,7 +191,7 @@ namespace Proyecto
                                             case 3:
                                                 if (druidCooldown == 0)
                                                 {
-                                                    SpecialAbilities.DruidAbility(ref archerHealth, ogArcherHealth, ref barbarianHealth, ogBarbarianHealth, ref mageHealth, ogMageHealth, ref druidHealth, ogDruidHealth);
+                                                    TurnOptions.DruidAbility(ref archerHealth, ogArcherHealth, ref barbarianHealth, ogBarbarianHealth, ref mageHealth, ogMageHealth, ref druidHealth, ogDruidHealth);
                                                 }
                                                 else
                                                 {
@@ -215,10 +212,10 @@ namespace Proyecto
                             }
                         }
 
-                        ProgramFlowHelpers.MonsterTurn(ref archerHealth, archerDefense, ref barbarianHealth, barbarianDefense, ref mageHealth, mageDefense, ref druidHealth, druidDefense, barbarianInvulnerability, monsterAttack);
+                        GeneralUtils.MonsterTurn(ref archerHealth, archerDefense, ref barbarianHealth, barbarianDefense, ref mageHealth, mageDefense, ref druidHealth, druidDefense, barbarianInvulnerability, monsterAttack);
 
-                        ProgramFlowHelpers.DecreaseTurnVariables(ref monsterKnockout, ref barbarianInvulnerability, ref archerCooldown, ref barbarianCooldown, ref mageCooldown, ref druidCooldown);
-                        ProgramFlowHelpers.RestoreDefenseValues(ref archerDefense, ogArcherDefense, ref barbarianDefense, barbarianInvulnerability, ogBarbarianDefense, ref mageDefense, ogMageDefense, ref druidDefense, ogDruidDefense);
+                        GeneralUtils.DecreaseTurnVariables(ref monsterKnockout, ref barbarianInvulnerability, ref archerCooldown, ref barbarianCooldown, ref mageCooldown, ref druidCooldown);
+                        GeneralUtils.RestoreDefenseValues(ref archerDefense, ogArcherDefense, ref barbarianDefense, barbarianInvulnerability, ogBarbarianDefense, ref mageDefense, ogMageDefense, ref druidDefense, ogDruidDefense);
                     }
                 }
             }
