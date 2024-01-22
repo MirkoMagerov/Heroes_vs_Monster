@@ -4,87 +4,90 @@ namespace HeroesVsMonster_TurnOptions
 {
     public class TurnOptions
     {
-        public static void Attack(double attackDamage, ref double monsterHealth, Random random, double monsterDefense)
+        public static double Attack(int charIndex, double[,] stats, int monsterIndex, int attack, int defense, Random random, string[] names)
         {
-            const int doubleAttack = 2;
+            const int TWO = 2;
+            const double ONE_HUNDRED = 100.0;
+            double attackDamage;
 
+            Console.BackgroundColor = ConsoleColor.White;
             if (!GeneralUtils.IsMissedAttack(random))
             {
+                attackDamage = Math.Round(stats[charIndex, attack] - (stats[charIndex, attack] * stats[monsterIndex, defense]) / ONE_HUNDRED, TWO);
+
                 if (GeneralUtils.IsCriticAttac(random))
                 {
-                    attackDamage *= doubleAttack;
-                    Console.WriteLine("Double damage");
+                    attackDamage *= TWO;
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.Write($"{names[charIndex]} ");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write("ha hecho un ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("ataque crítico ");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write("y ha causado el ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("doble de daño");
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine("!");
                 }
-                monsterHealth -= Math.Round(attackDamage - (attackDamage * monsterDefense) / 100.0, 2);
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write($"{names[charIndex]} ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write($"ha hecho ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write($"{attackDamage} ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write($"puntos de daño al ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write($"monstruo");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine($".");
             }
             else
             {
-                Console.WriteLine("Missed");
-            }
-        }
-
-        public static void Defense(int index, ref double archerDefense, ref double barbDefense, ref double mageDefense, ref double druidDefense)
-        {
-            const int defenseMultiplier = 2;
-
-            switch (index)
-            {
-                case 0:
-                    archerDefense *= defenseMultiplier;
-                    break;
-                case 1:
-                    barbDefense *= defenseMultiplier;
-                    break;
-                case 2:
-                    mageDefense *= defenseMultiplier;
-                    break;
-                case 3:
-                    druidDefense *= defenseMultiplier;
-                    break;
-            }
-        }
-
-        public static void ArcherAbility(ref int monsterKnockout)
-        {
-            const int knockedTurns = 3;
-            monsterKnockout = knockedTurns;
-        }
-
-        public static void BarbarianAbility(ref int invulnerability)
-        {
-            const int invulnerabilityTurns = 3;
-            invulnerability = invulnerabilityTurns;
-        }
-
-        public static void MageAbility(double mageAttack, ref double monsterHealth)
-        {
-            const int attackMultiplier = 3;
-
-            monsterHealth -= mageAttack * attackMultiplier;
-        }
-
-        public static void DruidAbility(ref double archerHealth, double ogArchHealth, ref double barbarianHealth, double ogBarbHealth, ref double mageHealth, double ogMageHealth, ref double druidHealth, double ogDruidHealth)
-        {
-            const double healedQuantity = 500;
-
-            if (archerHealth > 0)
-            {
-                archerHealth += healedQuantity;
-                if (archerHealth > ogArchHealth) archerHealth = ogArchHealth;
-            }
-            if (barbarianHealth > 0)
-            {
-                barbarianHealth += healedQuantity;
-                if (barbarianHealth > ogBarbHealth) barbarianHealth = ogBarbHealth;
-            }
-            if (mageHealth > 0)
-            {
-                mageHealth += healedQuantity;
-                if (mageHealth > ogMageHealth) mageHealth = ogMageHealth;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("¡Que pena! ");
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Console.Write($"{names[charIndex]} ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write("ha ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("fallado ");
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine("su ataque debido a que ha escuchado 'Base de datos' y se ha dormido por este turno.");
+                attackDamage = 0;
             }
 
-            druidHealth += healedQuantity;
-            if (druidHealth > ogDruidHealth) druidHealth = ogDruidHealth;
+            Console.ResetColor();
+            return attackDamage;
+        }
+
+        public static double Attack(int charIndex, double[,] stats, int monsterIndex, int attack, int defense, Random random, string[] names, int multiplier) // Multiplicador de daño de la maga
+        {
+            const int TWO = 2;
+            const double ONE_HUNDRED = 100.0;
+            double attackDamage;
+
+            attackDamage = Math.Round(stats[charIndex, attack] - (stats[charIndex, attack] * stats[monsterIndex, defense]) / ONE_HUNDRED, TWO);
+            attackDamage *= multiplier;
+
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write($"{names[charIndex]} ");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Write($"ha hecho ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write($"{attackDamage} ");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Write($"puntos de daño al ");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write($"monstruo");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine($".");
+            Console.ResetColor();
+
+            return attackDamage;
         }
     }
 }
