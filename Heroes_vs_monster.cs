@@ -2,8 +2,6 @@ using HeroesVsMonster_CharactersCreation;
 using HeroesVsMonster_GeneralUtils;
 using HeroesVsMonster_MenuOptions;
 using HeroesVsMonster_TurnOptions;
-using System.Diagnostics.Metrics;
-using System.Reflection.Emit;
 
 namespace HeroesVsMonster
 {
@@ -28,6 +26,11 @@ namespace HeroesVsMonster
             const string MSG_PERSONALIZED_DIFFICULTY = "- Personalizada: Toma el control total. En la dificultad personalizada, puedes elegir manualmente los valores para tus\npersonajes y monstruos dentro de un rango especificado. ¡Ajusta la dificultad a tu gusto!";
             const string MSG_RANDOM_DIFFICULTY = "- Random: Deja que el azar decida. La opción random asigna de manera aleatoria las estadísticas de todos los\npersonajes, agregando un elemento impredecible a tu aventura. ¿Quién sabe qué desafíos te esperan?";
             const string MSG_CHOOSE_WISELY = "Elige sabiamente y disfruta de tu viaje en este emocionante juego.";
+            const string MSG_HEROES_WON = "¡HURRA!\n\nEnhorabuena héroes, vuestra valentía ha derrotado al monstruo.\n\n¡Que vuestro triunfo inspire esperanza y celebremos juntos la luz que habéis traído!";
+            const string MSG_MONSTER_WON = "¡NOOOOO!\n\nLamentamos la pérdida de valientes que cayeron ante el monstruo. En su memoria, recordamos su sacrificio y elevamos nuestras plegarias.\n\nAunque la tristeza nos embargue, su valentía perdurará como un faro en la oscuridad.";
+            const string MSG_PLAY_AGAIN_LOSS = "¡QUE LOCURA! Los héroes se han levantado de entre los muertos y ¡vuelven más fuertes que nunca!\n\n¿Tienes la valentía suficiente para intentar vencer al monstruo otra vez?";
+            const string MSG_PLAY_AGAIN_WIN = "¡OH NO¡ Hay un rumor que cuenta que hay un nuevo monstruo acechando en el bosque prohibido.\n\n¿Serias capaz de volver a enfrentarte a una nueva amenaza?";
+            const string MSG_OUT_OF_TRIES = "Te has quedado sin intentos. Quizá esto es demasiado para ti.";
 
             // Difficulty numbers and general flow constraints
             const int PersonalizedMode = 1;
@@ -52,7 +55,7 @@ namespace HeroesVsMonster
             string[] names = new string[numberOfCharacters - ONE];
 
             // Variables de flow general del programa
-            bool allHeroesDead = false;
+            bool allHeroesDead = false, namesCreated = false;
             int tries = 3, mainMenuDecision, difficultyDecision, turnDecision = 0;
 
             // Special characters variables
@@ -115,422 +118,458 @@ namespace HeroesVsMonster
 
             Console.Clear();
 
-            // Salir
-            if (mainMenuDecision == 0)
+            // Elección correcta
+            if (mainMenuDecision != -1 && tries > 0)
             {
-                Console.Clear();
-                Console.WriteLine(MSG_EXIT);
-            }
-
-            // Jugar
-            else if (tries > 0 && mainMenuDecision == 1)
-            {
-                // ************************** Nombres de los personajes **************************
-                string[] tempNames;
                 do
                 {
-                    Console.Write(MSG_ENTER_NAMES);
-                    string namesInput = Console.ReadLine() ?? "".Trim();
-                    namesInput = namesInput.Replace(" ", "");
-                    tempNames = namesInput.Split(",");
-                    Console.Clear();
-
-                    if (tempNames.Length != 4)
+                    if (mainMenuDecision == 1)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(MSG_WRONG_NAMES);
-                        Console.ResetColor();
-                        Console.WriteLine();
-                    }
-
-                } while (tempNames.Length != 4);
-
-                for (int i = 0; i < names.Length; i++)
-                {
-                    names[i] = CharactersCreation.CapitalizeFirstLetter(tempNames[i]);
-                }
-
-                // ************************* Escoger dificultad **************************
-
-                Console.WriteLine(MSG_PLAY);
-                Console.WriteLine();
-                Console.WriteLine(MSG_EASY_DIFFICULTY);
-                Console.WriteLine();
-                Console.WriteLine(MSG_HARD_DIFFICULTY);
-                Console.WriteLine();
-                Console.WriteLine(MSG_PERSONALIZED_DIFFICULTY);
-                Console.WriteLine();
-                Console.WriteLine(MSG_RANDOM_DIFFICULTY);
-                Console.WriteLine();
-                Console.WriteLine(MSG_CHOOSE_WISELY);
-                Console.WriteLine();
-
-                tries = 3;
-                do
-                {
-                    MenuOptions.PrintDifficultyMenuOptions(difficultyOptions);
-                    string input = Console.ReadLine() ?? "".Trim();
-                    Console.ResetColor();
-
-                    if (input != "") difficultyDecision = Convert.ToInt32(input);
-                    else difficultyDecision = -1;
-                    Console.Clear();
-
-                } while (!MenuOptions.CheckMenuDecision(difficultyOptions, difficultyDecision, ref tries) && tries > 0);
-
-                if (tries > 0)
-                {
-                    // ************************** Creación personajes según dificultad **************************
-                    if (difficultyDecision == PersonalizedMode)
-                    {
-                        for (int i = 0; i < numberOfCharacters; i++)
+                        if (!namesCreated)
                         {
-                            for (int j = 0; j < charactersStats.GetLength(1); j++)
+                            // ************************** Nombres de los personajes **************************
+                            string[] tempNames;
+                            do
                             {
-                                tries = 3;
-                                string input;
-                                double stat;
+                                Console.Write(MSG_ENTER_NAMES);
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                string namesInput = Console.ReadLine() ?? "".Trim();
+                                Console.ResetColor();
+                                namesInput = namesInput.Replace(" ", "");
+                                tempNames = namesInput.Split(",");
+                                Console.Clear();
 
-                                do
+                                if (tempNames.Length != 4)
                                 {
-                                    if (j == 0)
-                                    {
-                                        Console.Write("Introduce la ");
-                                        Console.ForegroundColor = ConsoleColor.Green;
-                                        Console.Write("vida ");
-                                        Console.ForegroundColor = ConsoleColor.White;
-                                        Console.Write("para ");
-                                        Console.ForegroundColor = ConsoleColor.Blue;
-                                        Console.WriteLine($"names[i].");
-                                        Console.ResetColor();
-
-                                        CharactersCreation.PrintCharacterHealthStat(allStatsRange[i, ZERO], allStatsRange[i, ONE]);
-                                    }
-                                    else if (j == 1)
-                                    {
-                                        Console.Write("Introduce el ");
-                                        Console.ForegroundColor = ConsoleColor.Red;
-                                        Console.Write("ataque ");
-                                        Console.ForegroundColor = ConsoleColor.White;
-                                        Console.Write("para ");
-                                        Console.ForegroundColor = ConsoleColor.Blue;
-                                        Console.WriteLine($"names[i].");
-                                        Console.ResetColor();
-
-                                        CharactersCreation.PrintCharacterHealthStat(allStatsRange[i, TWO], allStatsRange[i, THREE]);
-                                    }
-                                    else
-                                    {
-                                        Console.Write("Introduce la ");
-                                        Console.ForegroundColor = ConsoleColor.DarkYellow;
-                                        Console.Write("defensa ");
-                                        Console.ForegroundColor = ConsoleColor.White;
-                                        Console.Write("para ");
-                                        Console.ForegroundColor = ConsoleColor.Blue;
-                                        Console.WriteLine($"names[i].");
-                                        Console.ResetColor();
-
-                                        CharactersCreation.PrintCharacterHealthStat(allStatsRange[i, FOUR], allStatsRange[i, FIVE]);
-                                    }
-
-                                    input = Console.ReadLine() ?? "".Trim();
-
-                                    if (input != "") stat = Math.Round(Convert.ToDouble(input), TWO);
-                                    else stat = -1;
-
-                                    Console.Clear();
-
-                                } while (!CharactersCreation.CheckCharacterStat(ref stat, allStatsRange[i, j * TWO], allStatsRange[i, j * TWO + ONE], ref tries) && tries > 0);
-
-                                if (tries == 0) charactersStats[i, j] = allStatsRange[i, j * 2];
-                                else charactersStats[i, j] = stat;
-                            }
-                        }
-                    }
-
-                    else
-                    {
-                        CharactersCreation.CreateCompleteCharacter(allStatsRange, ref charactersStats, difficultyDecision, random);
-                    }
-
-                    // ************************** Guardar atributos originales en otras variables **************************
-                    for (int i = 0; i < originalStats.GetLength(0); i++)
-                    {
-                        for (int j = 0; j < originalStats.GetLength(1); j++)
-                        {
-                            originalStats[i, j] = charactersStats[i, j == 0 ? IndexHealth : IndexDefense];
-                        }
-                    }
-
-                    Console.Clear();
-
-                    // ************************** Sistema de combate por turnos **************************
-                    while (charactersStats[IndexMonster, IndexHealth] > 0 && !allHeroesDead)
-                    {
-                        turnOrder = GeneralUtils.GetRandomTurnOrder(random, IndexArcher, IndexBarbarian, IndexMage, IndexDruid); // Turnos aleatorios sin que se repita el mismo personaje
-
-                        for (int i = 0; i < turnOrder.Length; i++)
-                        {
-                            tries = 3;
-                            if (charactersStats[turnOrder[i], IndexHealth] > 0 && charactersStats[IndexMonster, IndexHealth] > 0) // Personaje actual vivo y monstruo vivo
-                            {
-                                bool specialAbilityValidOption;
-                                do
-                                {
-                                    specialAbilityValidOption = true;
-                                    Console.WriteLine($"Turno de: {names[turnOrder[i]]}");
-                                    Console.WriteLine();
-                                    MenuOptions.PrintTurnMenuOptions(turnOptions);
-                                    turnDecision = Convert.ToInt32(Console.ReadLine() ?? "");
+                                    Console.BackgroundColor = ConsoleColor.White;
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine(MSG_WRONG_NAMES);
                                     Console.ResetColor();
+                                    Console.WriteLine();
+                                }
 
-                                    if (turnDecision == 0) // Si elige la opción de usar habilidad especial y está en cooldown, se le resta un intento pero vuelve a poder elegir otra opción
-                                    {
-                                        specialAbilityValidOption = GeneralUtils.CheckAbilityOnCooldown(turnOrder[i], archerCooldown, barbarianCooldown, mageCooldown, druidCooldown);
+                            } while (tempNames.Length != 4);
 
-                                        if (!specialAbilityValidOption)
-                                        {
-                                            Console.Clear();
-                                            Console.ForegroundColor = ConsoleColor.Red;
-                                            Console.BackgroundColor = ConsoleColor.White;
-                                            Console.WriteLine("Habilidad en cooldown. Elije otra opción de turno.");
-                                            Console.ResetColor();
-                                            Console.WriteLine();
-                                            tries--; // No se va a restar dos veces los intentos ya que realmente la opción del usuario está dentro de las opciones disponibles, por eso se resta aquí y el el while no.
-                                        }
-                                    }
-
-                                } while ((!MenuOptions.CheckMenuDecision(turnOptions, turnDecision, ref tries) || !specialAbilityValidOption) && tries > 0);
+                            for (int i = 0; i < names.Length; i++)
+                            {
+                                names[i] = CharactersCreation.CapitalizeFirstLetter(tempNames[i]);
                             }
+                        }
 
+                        namesCreated = true;
+                        // ************************* Escoger dificultad **************************
+
+                        Console.WriteLine(MSG_PLAY);
+                        Console.WriteLine();
+                        Console.WriteLine(MSG_EASY_DIFFICULTY);
+                        Console.WriteLine();
+                        Console.WriteLine(MSG_HARD_DIFFICULTY);
+                        Console.WriteLine();
+                        Console.WriteLine(MSG_PERSONALIZED_DIFFICULTY);
+                        Console.WriteLine();
+                        Console.WriteLine(MSG_RANDOM_DIFFICULTY);
+                        Console.WriteLine();
+                        Console.WriteLine(MSG_CHOOSE_WISELY);
+                        Console.WriteLine();
+
+                        tries = 3;
+                        do
+                        {
+                            MenuOptions.PrintDifficultyMenuOptions(difficultyOptions);
+                            string input = Console.ReadLine() ?? "".Trim();
+                            Console.ResetColor();
+
+                            if (input != "") difficultyDecision = Convert.ToInt32(input);
+                            else difficultyDecision = -1;
                             Console.Clear();
 
-                            if (tries > 0)
-                            {
-                                switch (turnDecision)
-                                {
-                                    // Ataque
-                                    case 2:
-                                        double damage = TurnOptions.Attack(turnOrder[i], charactersStats, IndexMonster, IndexAttack, IndexDefense, random, names);
-                                        charactersStats[IndexMonster, IndexHealth] -= damage;
-                                        break;
+                        } while (!MenuOptions.CheckMenuDecision(difficultyOptions, difficultyDecision, ref tries) && tries > 0);
 
-                                    // Defensa
-                                    case 1:
-                                        charactersStats[turnOrder[i], IndexDefense] *= TWO;
-                                        charactersStats[turnOrder[i], IndexDefense] = Math.Round(charactersStats[turnOrder[i], IndexDefense], 2);
-                                        Console.BackgroundColor = ConsoleColor.White;
-                                        Console.ForegroundColor = ConsoleColor.Blue;
-                                        Console.Write($"{names[turnOrder[i]]} ");
-                                        Console.ForegroundColor = ConsoleColor.Black;
-                                        Console.Write("ha ");
-                                        Console.ForegroundColor = ConsoleColor.Green;
-                                        Console.Write("duplicado ");
-                                        Console.ForegroundColor = ConsoleColor.Black;
-                                        Console.Write("su defensa durante un turno.");
-                                        break;
-
-                                    // Habilidad especial (no verifico que el cooldown esté en 0 ya que si hay cooldown el usuario no puede elegir la
-                                    // opción de habilidad especial y por tanto no entraría aquí ya que se acabarian los intentos si elige esta opción todo el rato)
-                                    case 0:
-                                        switch (turnOrder[i])
-                                        {
-                                            case 0:
-                                                monsterKnockout = TWO;
-                                                Console.BackgroundColor = ConsoleColor.White;
-                                                Console.ForegroundColor = ConsoleColor.Blue;
-                                                Console.Write($"{names[turnOrder[i]]} ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("ha ");
-                                                Console.ForegroundColor = ConsoleColor.Green;
-                                                Console.Write("noqueado ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("al ");
-                                                Console.ForegroundColor = ConsoleColor.Red;
-                                                Console.Write("monstruo ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("durante ");
-                                                Console.ForegroundColor = ConsoleColor.Green;
-                                                Console.Write(monsterKnockout);
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.WriteLine(" turnos con éxito.");
-                                                archerCooldown = 5;
-                                                break;
-
-                                            case 1:
-                                                Console.BackgroundColor = ConsoleColor.White;
-                                                Console.ForegroundColor = ConsoleColor.Blue;
-                                                Console.Write($"{names[turnOrder[i]]} ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("se ha vuelto ");
-                                                Console.ForegroundColor = ConsoleColor.Green;
-                                                Console.Write("inmune ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.WriteLine("durante 2 turnos.");
-                                                charactersStats[IndexBarbarian, IndexDefense] = ONE_HUNDRED;
-                                                barbarianAbilityTurns = 2;
-                                                barbarianCooldown = 5;
-                                                break;
-
-                                            case 2:
-                                                Console.BackgroundColor = ConsoleColor.White;
-                                                Console.ForegroundColor = ConsoleColor.Blue;
-                                                Console.Write($"{names[turnOrder[i]]} ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("ha hecho ");
-                                                Console.ForegroundColor = ConsoleColor.Green;
-                                                Console.Write("daño triple ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("al ");
-                                                Console.ForegroundColor = ConsoleColor.Red;
-                                                Console.WriteLine("monstruo.");
-                                                charactersStats[IndexMonster, IndexHealth] -= TurnOptions.Attack(turnOrder[i], charactersStats, IndexMonster, IndexAttack, IndexDefense, random, names, THREE);
-                                                mageCooldown = 5;
-                                                break;
-
-                                            case 3:
-                                                Console.BackgroundColor = ConsoleColor.White;
-                                                Console.ForegroundColor = ConsoleColor.Blue;
-                                                Console.Write($"{names[turnOrder[i]]} ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.Write("ha usado su habilidad especial y ha ");
-                                                Console.ForegroundColor = ConsoleColor.Green;
-                                                Console.Write("curado a");
-                                                Console.ForegroundColor = ConsoleColor.Blue;
-
-                                                for (int j = 0; j < turnOrder.Length - 1; j++) // Excluimos al druida
-                                                {
-                                                    charactersStats[IndexDruid, IndexHealth] += FIVE_HUNDRED;
-                                                    if (charactersStats[IndexDruid, IndexHealth] > originalStats[IndexDruid, IndexHealth]) charactersStats[IndexDruid, IndexHealth] = originalStats[IndexDruid, IndexHealth];
-
-                                                    if (charactersStats[j, IndexHealth] > 0)
-                                                    {
-                                                        Console.Write($" {names[j]},");
-                                                        charactersStats[j, IndexHealth] += FIVE_HUNDRED;
-                                                        if (charactersStats[j, IndexHealth] > originalStats[j, IndexHealth]) charactersStats[j, IndexHealth] = originalStats[j, IndexHealth];
-                                                    }
-                                                }
-                                                Console.Write($" {names[IndexDruid]} ");
-                                                Console.ForegroundColor = ConsoleColor.Green;
-                                                Console.Write("500 ");
-                                                Console.ForegroundColor = ConsoleColor.Black;
-                                                Console.WriteLine("puntos de vida.");
-                                                druidCooldown = 5;
-                                                break;
-                                        }
-                                        break;
-                                }
-                                Console.ResetColor();
-                                Console.WriteLine();
-                            }
-                            tries = 3;
-                        }
-
-                        if (charactersStats[IndexMonster, IndexHealth] > 0)
+                        if (tries > 0)
                         {
-                            Console.BackgroundColor = ConsoleColor.White;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            if (monsterKnockout == 0) // Turno del monstruo en caso de que no este noqueado
+                            // ************************** Creación personajes según dificultad **************************
+                            if (difficultyDecision == PersonalizedMode)
                             {
-                                for (int i = 0; i < turnOrder.Length; i++)
+                                for (int i = 0; i < numberOfCharacters; i++)
                                 {
-                                    double damage = GeneralUtils.MonsterTurnAttack(charactersStats, IndexMonster, i, IndexAttack, IndexDefense);
-                                    charactersStats[i, IndexHealth] -= damage;
-                                    Console.Write($"El ");
-                                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                                    Console.Write(" monstruo");
-                                    Console.ForegroundColor = ConsoleColor.Black;
-                                    Console.Write($" ha atacado a");
-                                    Console.ForegroundColor = ConsoleColor.Blue;
-                                    Console.Write($" {names[i]}");
-                                    Console.ForegroundColor = ConsoleColor.Black;
-                                    Console.Write($" y le ha causado");
-                                    Console.ForegroundColor = ConsoleColor.Red;
-                                    Console.Write($" {damage}");
-                                    Console.ForegroundColor = ConsoleColor.Black;
-                                    Console.WriteLine($" puntos de daño.");
+                                    for (int j = 0; j < charactersStats.GetLength(1); j++)
+                                    {
+                                        tries = 3;
+                                        string input;
+                                        double stat;
+
+                                        do
+                                        {
+                                            if (j == 0)
+                                            {
+                                                Console.Write("Introduce la ");
+                                                Console.ForegroundColor = ConsoleColor.Green;
+                                                Console.Write("vida ");
+                                                Console.ForegroundColor = ConsoleColor.White;
+                                                Console.Write("para ");
+                                                Console.ForegroundColor = ConsoleColor.Blue;
+                                                Console.WriteLine($"{names[i]}");
+                                                Console.ResetColor();
+
+                                                CharactersCreation.PrintCharacterHealthStat(allStatsRange[i, ZERO], allStatsRange[i, ONE]);
+                                            }
+                                            else if (j == 1)
+                                            {
+                                                Console.Write("Introduce el ");
+                                                Console.ForegroundColor = ConsoleColor.Red;
+                                                Console.Write("ataque ");
+                                                Console.ForegroundColor = ConsoleColor.White;
+                                                Console.Write("para ");
+                                                Console.ForegroundColor = ConsoleColor.Blue;
+                                                Console.WriteLine($"{names[i]}");
+                                                Console.ResetColor();
+
+                                                CharactersCreation.PrintCharacterHealthStat(allStatsRange[i, TWO], allStatsRange[i, THREE]);
+                                            }
+                                            else
+                                            {
+                                                Console.Write("Introduce la ");
+                                                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                                                Console.Write("defensa ");
+                                                Console.ForegroundColor = ConsoleColor.White;
+                                                Console.Write("para ");
+                                                Console.ForegroundColor = ConsoleColor.Blue;
+                                                Console.WriteLine($"{names[i]}");
+                                                Console.ResetColor();
+
+                                                CharactersCreation.PrintCharacterHealthStat(allStatsRange[i, FOUR], allStatsRange[i, FIVE]);
+                                            }
+
+                                            input = Console.ReadLine() ?? "".Trim();
+
+                                            if (input != "") stat = Math.Round(Convert.ToDouble(input), TWO);
+                                            else stat = -1;
+
+                                            Console.Clear();
+
+                                        } while (!CharactersCreation.CheckCharacterStat(ref stat, allStatsRange[i, j * TWO], allStatsRange[i, j * TWO + ONE], ref tries) && tries > 0);
+
+                                        if (tries == 0) charactersStats[i, j] = allStatsRange[i, j * 2];
+                                        else charactersStats[i, j] = stat;
+                                    }
                                 }
                             }
 
                             else
                             {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.Write("Monstruo");
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(" noqueado");
-                                Console.ForegroundColor = ConsoleColor.Black;
-                                Console.Write(" durante ");
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write(monsterKnockout);
-                                Console.ForegroundColor = ConsoleColor.Black;
-                                Console.WriteLine(" turno/s.");
-                                monsterKnockout--;
+                                CharactersCreation.CreateCompleteCharacter(allStatsRange, ref charactersStats, difficultyDecision, random);
                             }
 
-                            for (int i = 0; i < turnOrder.Length; i++) // Restablecer valores de defensa a su valor original
+                            // ************************** Guardar atributos originales en otras variables **************************
+                            for (int i = 0; i < originalStats.GetLength(0); i++)
                             {
-                                if (i == IndexBarbarian && barbarianAbilityTurns > 0)
+                                for (int j = 0; j < originalStats.GetLength(1); j++)
                                 {
-                                    barbarianAbilityTurns--;
-                                }
-                                else
-                                {
-                                    charactersStats[i, IndexDefense] = originalStats[i, IndexDefense - ONE]; // El - ONE sirve para especificar la posición correcta de originalStats ya que solo tiene 2 columnas, debido a que no se guarda el ataque.
+                                    originalStats[i, j] = charactersStats[i, j == 0 ? IndexHealth : IndexDefense];
                                 }
                             }
 
-                            // ---------- NO FUNCIONA ----------
-                            // GeneralUtils.DisplayCharactersHealthDesc(charactersStats,IndexHealth,names);
+                            Console.Clear();
 
-                            Console.WriteLine();
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write("Vida restante del ");
-                            Console.ForegroundColor = ConsoleColor.DarkRed;
-                            Console.Write(" monstruo: ");
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.Write(charactersStats[IndexMonster, IndexHealth]);
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.WriteLine(" puntos.");
+                            // ************************** Sistema de combate por turnos **************************
+                            while (charactersStats[IndexMonster, IndexHealth] > 0 && !allHeroesDead)
+                            {
+                                turnOrder = GeneralUtils.GetRandomTurnOrder(random, IndexArcher, IndexBarbarian, IndexMage, IndexDruid, charactersStats, IndexHealth); // Turnos aleatorios sin que se repita el mismo dos veces y excluyendo a los muertos
+                                for (int i = 0; i < turnOrder.Length; i++)
+                                {
+                                    tries = 3;
+                                    if (charactersStats[turnOrder[i], IndexHealth] > 0 && charactersStats[IndexMonster, IndexHealth] > 0) // Personaje actual vivo y monstruo vivo
+                                    {
+                                        bool specialAbilityValidOption;
+                                        do
+                                        {
+                                            specialAbilityValidOption = true;
+                                            Console.WriteLine($"Turno de: {names[turnOrder[i]]}");
+                                            Console.WriteLine();
+                                            MenuOptions.PrintTurnMenuOptions(turnOptions);
+                                            turnDecision = Convert.ToInt32(Console.ReadLine() ?? "");
+                                            Console.ResetColor();
 
-                            if (archerCooldown > 0) archerCooldown--;
-                            if (barbarianCooldown > 0) barbarianCooldown--;
-                            if (mageCooldown > 0) mageCooldown--;
-                            if (druidCooldown > 0) druidCooldown--;
+                                            if (turnDecision == 0) // Si elige la opción de usar habilidad especial y está en cooldown, se le resta un intento pero vuelve a poder elegir otra opción
+                                            {
+                                                specialAbilityValidOption = GeneralUtils.CheckAbilityOnCooldown(turnOrder[i], archerCooldown, barbarianCooldown, mageCooldown, druidCooldown);
 
-                            Console.ResetColor();
-                            Console.WriteLine();
+                                                if (!specialAbilityValidOption)
+                                                {
+                                                    Console.Clear();
+                                                    Console.ForegroundColor = ConsoleColor.Red;
+                                                    Console.BackgroundColor = ConsoleColor.White;
+                                                    Console.WriteLine("Habilidad en cooldown. Elije otra opción de turno.");
+                                                    Console.ResetColor();
+                                                    Console.WriteLine();
+                                                    tries--; // No se va a restar dos veces los intentos ya que realmente la opción del usuario está dentro de las opciones disponibles, por eso se resta aquí y el el while no.
+                                                }
+                                            }
+
+                                        } while ((!MenuOptions.CheckMenuDecision(turnOptions, turnDecision, ref tries) || !specialAbilityValidOption) && tries > 0);
+                                    }
+
+                                    Console.Clear();
+
+                                    if (tries > 0 && charactersStats[turnOrder[i], IndexHealth] > 0)
+                                    {
+                                        switch (turnDecision)
+                                        {
+                                            // Ataque
+                                            case 2:
+                                                double damage = TurnOptions.Attack(turnOrder[i], charactersStats, IndexMonster, IndexAttack, IndexDefense, random, names);
+                                                charactersStats[IndexMonster, IndexHealth] -= damage;
+                                                break;
+
+                                            // Defensa
+                                            case 1:
+                                                TurnOptions.Defense(ref charactersStats, turnOrder, i, IndexDefense, names);
+                                                break;
+
+                                            // Habilidad especial (no verifico que el cooldown esté en 0 ya que si hay cooldown el usuario no puede elegir la
+                                            // opción de habilidad especial y por tanto no entraría aquí ya que se acabarian los intentos si elige esta opción todo el rato)
+                                            case 0:
+                                                switch (turnOrder[i])
+                                                {
+                                                    case 0:
+                                                        monsterKnockout = TWO;
+                                                        Console.BackgroundColor = ConsoleColor.White;
+                                                        Console.ForegroundColor = ConsoleColor.Blue;
+                                                        Console.Write($"{names[turnOrder[i]]} ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("ha ");
+                                                        Console.ForegroundColor = ConsoleColor.Green;
+                                                        Console.Write("noqueado ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("al ");
+                                                        Console.ForegroundColor = ConsoleColor.Red;
+                                                        Console.Write("monstruo ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("durante ");
+                                                        Console.ForegroundColor = ConsoleColor.Green;
+                                                        Console.Write(monsterKnockout);
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.WriteLine(" turnos con éxito.");
+                                                        archerCooldown = 5;
+                                                        break;
+
+                                                    case 1:
+                                                        Console.BackgroundColor = ConsoleColor.White;
+                                                        Console.ForegroundColor = ConsoleColor.Blue;
+                                                        Console.Write($"{names[turnOrder[i]]} ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("se ha vuelto ");
+                                                        Console.ForegroundColor = ConsoleColor.Green;
+                                                        Console.Write("inmune ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.WriteLine("durante 2 turnos.");
+                                                        charactersStats[IndexBarbarian, IndexDefense] = ONE_HUNDRED;
+                                                        barbarianAbilityTurns = 2;
+                                                        barbarianCooldown = 5;
+                                                        break;
+
+                                                    case 2:
+                                                        Console.BackgroundColor = ConsoleColor.White;
+                                                        Console.ForegroundColor = ConsoleColor.Blue;
+                                                        Console.Write($"{names[turnOrder[i]]} ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("ha hecho ");
+                                                        Console.ForegroundColor = ConsoleColor.Green;
+                                                        Console.Write("daño triple ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("al ");
+                                                        Console.ForegroundColor = ConsoleColor.Red;
+                                                        Console.WriteLine("monstruo.");
+                                                        charactersStats[IndexMonster, IndexHealth] -= TurnOptions.Attack(turnOrder[i], charactersStats, IndexMonster, IndexAttack, IndexDefense, random, names, THREE);
+                                                        mageCooldown = 5;
+                                                        break;
+
+                                                    case 3:
+                                                        Console.BackgroundColor = ConsoleColor.White;
+                                                        Console.ForegroundColor = ConsoleColor.Blue;
+                                                        Console.Write($"{names[turnOrder[i]]} ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.Write("ha usado su habilidad especial y ha ");
+                                                        Console.ForegroundColor = ConsoleColor.Green;
+                                                        Console.Write("curado a");
+                                                        Console.ForegroundColor = ConsoleColor.Blue;
+
+                                                        for (int j = 0; j < turnOrder.Length - 1; j++) // Excluimos al druida
+                                                        {
+                                                            charactersStats[IndexDruid, IndexHealth] += FIVE_HUNDRED;
+                                                            if (charactersStats[IndexDruid, IndexHealth] > originalStats[IndexDruid, IndexHealth]) charactersStats[IndexDruid, IndexHealth] = originalStats[IndexDruid, IndexHealth];
+
+                                                            if (charactersStats[j, IndexHealth] > 0)
+                                                            {
+                                                                Console.Write($" {names[j]},");
+                                                                charactersStats[j, IndexHealth] += FIVE_HUNDRED;
+                                                                if (charactersStats[j, IndexHealth] > originalStats[j, IndexHealth]) charactersStats[j, IndexHealth] = originalStats[j, IndexHealth];
+                                                            }
+                                                        }
+                                                        Console.Write($" {names[IndexDruid]} ");
+                                                        Console.ForegroundColor = ConsoleColor.Green;
+                                                        Console.Write("500 ");
+                                                        Console.ForegroundColor = ConsoleColor.Black;
+                                                        Console.WriteLine("puntos de vida.");
+                                                        druidCooldown = 5;
+                                                        break;
+                                                }
+                                                break;
+                                        }
+                                        Console.ResetColor();
+                                        Console.WriteLine();
+                                    }
+                                    tries = 3;
+                                }
+
+                                if (charactersStats[IndexMonster, IndexHealth] > 0)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.White;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    if (monsterKnockout == 0) // Turno del monstruo en caso de que no este noqueado
+                                    {
+                                        for (int i = 0; i < turnOrder.Length; i++)
+                                        {
+                                            if (charactersStats[turnOrder[i], IndexHealth] > 0)
+                                            {
+                                                double damage = GeneralUtils.MonsterTurnAttack(charactersStats, IndexMonster, i, IndexAttack, IndexDefense);
+                                                charactersStats[turnOrder[i], IndexHealth] -= damage;
+                                                Console.Write($"El ");
+                                                Console.ForegroundColor = ConsoleColor.DarkRed;
+                                                Console.Write("monstruo");
+                                                Console.ForegroundColor = ConsoleColor.Black;
+                                                Console.Write($" ha atacado a");
+                                                Console.ForegroundColor = ConsoleColor.Blue;
+                                                Console.Write($" {names[turnOrder[i]]}");
+                                                Console.ForegroundColor = ConsoleColor.Black;
+                                                Console.Write($" y le ha causado");
+                                                Console.ForegroundColor = ConsoleColor.Red;
+                                                Console.Write($" {damage}");
+                                                Console.ForegroundColor = ConsoleColor.Black;
+                                                Console.WriteLine($" puntos de daño.");
+                                            }
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        Console.ForegroundColor = ConsoleColor.Red;
+                                        Console.Write("Monstruo");
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                        Console.Write(" noqueado");
+                                        Console.ForegroundColor = ConsoleColor.Black;
+                                        Console.Write(" durante ");
+                                        Console.ForegroundColor = ConsoleColor.Green;
+                                        Console.Write(monsterKnockout);
+                                        Console.ForegroundColor = ConsoleColor.Black;
+                                        Console.WriteLine(" turno/s.");
+                                        monsterKnockout--;
+                                    }
+
+                                    for (int i = 0; i < turnOrder.Length; i++) // Restablecer valores de defensa a su valor original
+                                    {
+                                        if (i == IndexBarbarian && barbarianAbilityTurns > 0)
+                                        {
+                                            barbarianAbilityTurns--;
+                                        }
+                                        else
+                                        {
+                                            charactersStats[i, IndexDefense] = originalStats[i, IndexDefense - ONE]; // El - ONE sirve para especificar la posición correcta de originalStats ya que solo tiene 2 columnas, debido a que no se guarda el ataque.
+                                        }
+                                    }
+
+                                    // ---------- Mostrar vida de los héroes en forma descendente y la vida del monstruo ----------
+                                    Console.WriteLine();
+                                    GeneralUtils.DisplayCharactersHealthDesc(charactersStats, IndexHealth, names);
+
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.Write("Vida restante del ");
+                                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                                    Console.Write("Monstruo: ");
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.Write(charactersStats[IndexMonster, IndexHealth]);
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.WriteLine(" puntos.");
+
+                                    if (archerCooldown > 0) archerCooldown--;
+                                    if (barbarianCooldown > 0) barbarianCooldown--;
+                                    if (mageCooldown > 0) mageCooldown--;
+                                    if (druidCooldown > 0) druidCooldown--;
+
+                                    Console.ResetColor();
+                                    Console.WriteLine();
+                                }
+
+                                int k = 0;
+                                allHeroesDead = true;
+                                while (allHeroesDead && k < FOUR)
+                                {
+                                    if (charactersStats[k, IndexHealth] > 0)
+                                    {
+                                        allHeroesDead = false;
+                                    }
+                                    k++;
+                                }
+                            }
+
+                            if (allHeroesDead)
+                            {
+                                Console.Clear();
+                                Console.WriteLine(MSG_MONSTER_WON);
+                                Console.WriteLine();
+                                Console.Write(MSG_TYPE_TO_CONTINUE);
+                                Console.ReadKey();
+                                Console.Clear();
+                                Console.WriteLine(MSG_PLAY_AGAIN_LOSS);
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Console.WriteLine(MSG_HEROES_WON);
+                                Console.WriteLine();
+                                Console.Write(MSG_TYPE_TO_CONTINUE);
+                                Console.ReadKey();
+                                Console.Clear();
+                                Console.WriteLine(MSG_PLAY_AGAIN_WIN);
+                            }
                         }
+                    }
 
-                        int k = 0;
-                        allHeroesDead = true;
-                        while (allHeroesDead && k < turnOrder.Length)
+                    if (tries > 0 && mainMenuDecision == 1)
+                    {
+                        tries = 3;
+
+                        Console.WriteLine();
+
+                        do // Volver a preguntar si quiere jugar otra partida
                         {
-                            if (charactersStats[k, IndexHealth] > 0)
-                            {
-                                allHeroesDead = false;
-                            }
-                            k++;
-                        }
+                            MenuOptions.PrintMainMenuOptions(mainMenuOptions);
+                            string input = Console.ReadLine() ?? "".Trim();
+                            Console.ResetColor();
+
+                            if (input != "") mainMenuDecision = Convert.ToInt32(input);
+                            else mainMenuDecision = -1;
+                            Console.Clear();
+
+                        } while (!MenuOptions.CheckMenuDecision(mainMenuOptions, mainMenuDecision, ref tries) && tries > 0);
+
+                        if (tries > 0) tries = 3;
                     }
 
-                    if (allHeroesDead)
+                    if (mainMenuDecision == 0)
                     {
                         Console.Clear();
-                        Console.WriteLine("Héroes muertos.");
+                        Console.WriteLine(MSG_EXIT);
                     }
-                    else
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Monstruo muerto.");
-                    }
-                }
+
+                } while (tries > 0 && mainMenuDecision == 1);
             }
 
             if (tries == 0)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Clear();
-                Console.WriteLine("Te has quedado sin intentos. Quizá esto es demasiado para ti.");
+                Console.WriteLine(MSG_OUT_OF_TRIES);
                 Console.ResetColor();
             }
         }

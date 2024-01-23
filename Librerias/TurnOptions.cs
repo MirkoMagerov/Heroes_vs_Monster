@@ -89,5 +89,22 @@ namespace HeroesVsMonster_TurnOptions
 
             return attackDamage;
         }
+
+        public static void Defense(ref double[,] charactersStats, int[] turnOrder, int index, int IndexDefense, string[] names)
+        {
+            const int TWO = 2;
+
+            charactersStats[turnOrder[index], IndexDefense] *= TWO;
+            charactersStats[turnOrder[index], IndexDefense] = Math.Round(charactersStats[turnOrder[index], IndexDefense], 2);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write($"{names[turnOrder[index]]} ");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Write("ha ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("duplicado ");
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine("su defensa durante un turno.");
+        }
     }
 }

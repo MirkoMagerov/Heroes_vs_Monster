@@ -22,6 +22,7 @@
             if (!validDecision)
             {
                 Console.Clear();
+                Console.BackgroundColor = ConsoleColor.White;
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Te has equivocado de opción. Vuelve a intentarlo.");
                 Console.ResetColor();

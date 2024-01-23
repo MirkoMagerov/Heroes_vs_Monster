@@ -1,45 +1,52 @@
-﻿using System.Xml.Linq;
-
-namespace HeroesVsMonster_GeneralUtils
+﻿namespace HeroesVsMonster_GeneralUtils
 {
     public class GeneralUtils
     {
-        public static void DisplayCharacterStats(double[,] charactersStats)
-        {
-            string[] characters = { "Arquera", "Barbaro", "Maga", "Druida", "Monstruo" };
-            string[] stats = { "Vida", "Ataque", "Defensa" };
-
-            for (int i = 0; i < characters.GetLength(0); i++)
-            {
-                Console.WriteLine($"Personaje: {characters[i]}");
-
-                for (int j = 0; j < stats.GetLength(0); j++)
-                {
-                    Console.Write($"{stats[j]}: {charactersStats[i, j]}");
-
-                    // Agrega una coma si no es la última estadística
-                    if (j < stats.GetLength(0) - 1)
-                    {
-                        Console.Write(", ");
-                    }
-                }
-
-                Console.WriteLine(); // Salto de línea para el próximo personaje
-            }
-        }
-
-        public static int[] GetRandomTurnOrder(Random random, int archerIndex, int barbarianIndex, int mageIndex, int druidIndex)
+        public static int[] GetRandomTurnOrder(Random random, int archerIndex, int barbarianIndex, int mageIndex, int druidIndex, double[,] charactersStats, int IndexHealth)
         {
             int[] randomOrder = { archerIndex, barbarianIndex, mageIndex, druidIndex };
+            int aliveCount = 0;
 
-            for (int i = randomOrder.Length - 1; i > 0; i--)
+            // Contar la cantidad de personajes vivos
+            for (int i = 0; i < randomOrder.Length; i++)
+            {
+                if (charactersStats[randomOrder[i], IndexHealth] > 0)
+                {
+                    aliveCount++;
+                }
+            }
+
+            if (aliveCount == 0)
+            {
+                return randomOrder;
+            }
+
+            int[] finalOrder = new int[aliveCount];
+
+            int currentIndex = 0;
+            for (int i = 0; i < randomOrder.Length; i++)
+            {
+                if (charactersStats[randomOrder[i], IndexHealth] > 0)
+                {
+                    finalOrder[currentIndex] = randomOrder[i];
+                    currentIndex++;
+                }
+            }
+
+            if (aliveCount == 1)
+            {
+                return finalOrder;
+            }
+
+            for (int i = finalOrder.Length - 1; i > 0; i--)
             {
                 int j = random.Next(0, i + 1);
 
-                (randomOrder[j], randomOrder[i]) = (randomOrder[i], randomOrder[j]);
+                // Intercambiar elementos en finalOrder
+                (finalOrder[i], finalOrder[j]) = (finalOrder[j], finalOrder[i]);
             }
 
-            return randomOrder;
+            return finalOrder;
         }
 
         public static bool CheckAbilityOnCooldown(int charIndex, int archerCooldown, int barbarianCooldown, int mageCooldown, int druidCooldown)
@@ -75,42 +82,53 @@ namespace HeroesVsMonster_GeneralUtils
 
         public static void DisplayCharactersHealthDesc(double[,] charStats, int healthIndex, string[] names)
         {
-            for (int i = 0; i < names.Length; i++)
-            {
-                for (int j = 0; j < names.Length - 1; j++)
-                {
-                    if (charStats[j, healthIndex] < charStats[j + 1, healthIndex])
-                    {
-                        double tempStat = charStats[j, healthIndex];
-                        charStats[j, healthIndex] = charStats[j + 1, healthIndex];
-                        charStats[j + 1, healthIndex] = tempStat;
+            // Clonamos la matriz de stats y el array de nombres para no influir en las constantes de índices y en la generación de turnos aleatoria
+            double[] copyHealthStats = new double[charStats.GetLength(0) - 1];
 
-                        string tempName = names[j];
-                        names[j] = names[j + 1];
-                        names[j + 1] = tempName;
+            for (int i = 0; i < copyHealthStats.Length; i++)
+            {
+                copyHealthStats[i] = charStats[i, healthIndex];
+            }
+
+            string[] copyNames = new string[names.Length];
+
+            for (int i = 0; i < copyNames.Length; i++)
+            {
+                copyNames[i] = names[i];
+            }
+
+            // Ordenamos los personajes de manera descendente por vida y cambiamos el nombre de la misma manera
+            for (int i = names.Length - 1; i >= 1; i--)
+            {
+                for (int j = 0; j < i; j++)
+                {
+                    if (copyHealthStats[j] < copyHealthStats[j + 1])
+                    {
+                        (copyHealthStats[j + 1], copyHealthStats[j]) = (copyHealthStats[j], copyHealthStats[j + 1]);
+                        (copyNames[j + 1], copyNames[j]) = (copyNames[j], copyNames[j + 1]);
                     }
                 }
             }
 
             for (int i = 0; i < charStats.GetLength(0) - 1; i++)
             {
-                if (charStats[i, healthIndex] > 0)
+                if (copyHealthStats[i] > 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.Write("Vida restante de ");
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write($"{names[i]}: ");
+                    Console.Write($"{copyNames[i]}: ");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write(charStats[i, healthIndex]);
+                    Console.Write(copyHealthStats[i]);
                     Console.ForegroundColor = ConsoleColor.Black;
                     Console.WriteLine(" puntos.");
                 }
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.Write($"{names[i]} ");
+                    Console.Write($"{copyNames[i]} ");
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("esta muerto/a.");
+                    Console.WriteLine("esta muerto/a.");
                 }
             }
         }
