@@ -13,7 +13,7 @@
             Console.Write($"Escoge el valor de la estadística entre los rangos permitidos [{minValue} - {maxValue}]: ");
         }
 
-        public static bool CheckCharacterStat(ref double stat, int minValue, int maxValue, ref int tries)
+        public static bool CheckCharacterStat(ref double stat, double minValue, double maxValue, ref int tries)
         {
             bool validDecision;
 

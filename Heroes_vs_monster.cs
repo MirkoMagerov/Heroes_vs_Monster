@@ -27,14 +27,19 @@ namespace HeroesVsMonster
             const string MSG_RANDOM_DIFFICULTY = "- Random: Deja que el azar decida. La opción random asigna de manera aleatoria las estadísticas de todos los\npersonajes, agregando un elemento impredecible a tu aventura. ¿Quién sabe qué desafíos te esperan?";
             const string MSG_CHOOSE_WISELY = "Elige sabiamente y disfruta de tu viaje en este emocionante juego.";
             const string MSG_HEROES_WON = "¡HURRA!\n\nEnhorabuena héroes, vuestra valentía ha derrotado al monstruo.\n\n¡Que vuestro triunfo inspire esperanza y celebremos juntos la luz que habéis traído!";
+            const string MSG_WIN_IMAGE = "                                                            \r\n                                                            \r\n                                                            \r\n                                                            \r\n                                                            \r\n                    %%/               ,%%                   \r\n                      %%    %%%%%    %%.                    \r\n         %%      ,     %%%  %%%%%  %%%     ,      %%        \r\n          #%%  %%%%%  %% %%% %%% %%% %%  %%%%%  %%*         \r\n            %%      #%&    %%%%%%%    %%*     #%&           \r\n              %%%%%%%     .%%%%%%%*     %%%%%%%             \r\n              %%%%%%%     ,%%%%%%%/     %%%%%%%             \r\n              %%%%%%%     /%%%%%%%(     %%%%%%%             \r\n              %%%%%%%     &%%   %%&     %%%%%%%             \r\n              %%   %%     %%%   %%%     %%   %%             \r\n             %%%   %%,    %%&   #%%    (%%   %%,            \r\n             %%%   &%&   .%%     %%*   %%%   %%&            \r\n             %%    .%%   &%%     %%&   %%     %%            \r\n             %%     %%   %%%     %%%   %%     %%            \r\n            %%%     %%,  %%%     (%%  (%%     %%,           \r\n                                                            \r\n                                                            \r\n                                                            \r\n                                                            ";
             const string MSG_MONSTER_WON = "¡NOOOOO!\n\nLamentamos la pérdida de valientes que cayeron ante el monstruo. En su memoria, recordamos su sacrificio y elevamos nuestras plegarias.\n\nAunque la tristeza nos embargue, su valentía perdurará como un faro en la oscuridad.";
+            const string MSG_LOSS_IMAGE = "                            ,,,.                            \r\n                  /@@&.              ,%@@%                  \r\n               @@                          #@(              \r\n             @,                               @#            \r\n           (@                                  &@           \r\n           @   @                             @  @(          \r\n          ,@  @.                             %@ ,@          \r\n           @  @%                             @& .@          \r\n           @/  @.                           *@  @@          \r\n            @, (@   #@@@@@@      .@@@@@&(   @. %@           \r\n             @@@% @@@@@@@@@#     @@@@@@@@@@ @@@.            \r\n    .@/       .@  (@@@@@@@*       &@@@@@@@,  @.       (&    \r\n   %@  @&     #@    @@@@*    @ @    &@@@&    @*     @&  @*  \r\n  %@    ,@@    @           %@@ @@,          .@   .@@    #@* \r\n/@           @@@@@@&,      @@@ @@@      *@@@@@@%           @\r\n  @@@#.*@@@       /@@ @%   #*   &    @@* @        @@@*,@@@@ \r\n             @@@   @ @ @#           @( (@(  .@@&            \r\n                 .@@ ,.@ #..@ @ *& @ (@ @@@                 \r\n                 ,@@  @@ /, @ @ (# @ @. @@@,                \r\n            #@@(   ,@     ,#@@@@&(.     @    /@@%           \r\n    @,            @@@@/               @@@@%            @%   \r\n     &@(     #@@,      ,@@&*    ,(@@&       (@@,     %@*    \r\n       @   %@                                   @   /@      \r\n       (@@@,                                     &@@@       \n";
             const string MSG_PLAY_AGAIN_LOSS = "¡QUE LOCURA! Los héroes se han levantado de entre los muertos y ¡vuelven más fuertes que nunca!\n\n¿Tienes la valentía suficiente para intentar vencer al monstruo otra vez?";
             const string MSG_PLAY_AGAIN_WIN = "¡OH NO¡ Hay un rumor que cuenta que hay un nuevo monstruo acechando en el bosque prohibido.\n\n¿Serias capaz de volver a enfrentarte a una nueva amenaza?";
             const string MSG_OUT_OF_TRIES = "Te has quedado sin intentos. Quizá esto es demasiado para ti.";
+            const string MSG_BOW_ICON = "\n                                             \r\n     @@                                      \r\n    @  @       @@                   @@@@@@   \r\n    @                @@     @@@@*       @    \r\n      @@@@%@       @@   @        @@@   @,    \r\n       @@             @  @@   @@  @@@ #@     \r\n         @@            @  @ @@ *@   @@@      \r\n           @@          @ @@  @@              \r\n             @@        @@ ,@    @@@          \r\n               @@   @@  @@@@@@@@@   @@       \r\n                 @@@ ,@           @@  @@     \r\n         @@@   @&  @@@              @  @     \r\n       @@    @@ ,%    @@#           @  @.    \r\n    @@@&@ @@  @@ @       @@@        @  @     \r\n    @@@@@@ .@#   @           @@    #@ @@     \r\n         (@    @@               @@(@  @@@%   \r\n          @@@@                     @@/    @  \r\n           @                                 \n\n\n";
+            const string MSG_AXE_ICON = "\n                                             \r\n                                             \r\n                     .........               \r\n                  ...*******,                \r\n               ...*********.                 \r\n              ..***********,                 \r\n              .*************,*(,             \r\n              .***********,,**/*     /*,,    \r\n              ..        ***************,,    \r\n                     /*((  ************,,    \r\n                   *((     /*********/,,     \r\n                **((       *********,,       \r\n              *((        ,,***,,,,,.         \r\n           /*((                              \r\n         *((                                 \r\n      ,*//                                   \r\n     (                                       \r\n                                             \n\n\n";
+            const string MSG_MAGIC_STAFF_ICON = "                                                                 \r\n                                                                 \r\n                                                                 \r\n                                  @@/     .@@.                   \r\n                               @@@      @@@                      \r\n                             @@(      @@.     @@@                \r\n                          .@@      @@@      @@(                  \r\n                        /#       @@,     @@@                     \r\n                       @@@@   @@@      @@#     %@                \r\n                      @@@@@@        &@@      @@@                 \r\n                     @@@@@@@@             #@@                    \r\n            @@@@@@@@@@@@@@@@@@@@@@@@@@&  @@                      \r\n             &@@@@@@@@@@@@@@@@@@@@@@@         @@@                \r\n                 @@@@@@@@@@@@@@@@#         ,@@                   \r\n                  @@@@@@@@@@@@@@         @@@                     \r\n                 @@@@@@@@@@@@@@@@     ,@@.                       \r\n                %@@@@@@    @@@@@@@  @@@                          \r\n                @@@@          (@@@                               \r\n                                                                 \r\n                                                                 \r\n                                                                 \r\n                                                                 ";
+            const string MSG_NATURE_ICON = "                                                            \r\n                                                            \r\n                                                            \r\n                                                            \r\n                    @@@@@@@@@@@@@@@@@@                      \r\n                 @@#(@@############@@(@(                    \r\n                @((###@###############(@@                   \r\n                @(##@@@@@##############(@@                  \r\n                @(########################@                 \r\n                @(#####@@##@@  @###@@######@                \r\n                @(###@    @@@  @@@   @@###%@                \r\n                @(#####@@          @@#####%@                \r\n                @(#######@@     @@########%@                \r\n                @(#########@@  @##########%@                \r\n                @(#########@@  @##########%@                \r\n                @(#########@@  @##########%@                \r\n                @#@@#######@@  @##########%@                \r\n                @&(########@@@@@#######@##%@                \r\n                 @@(##################&@##%@                \r\n                  %@(###@##@############@@@@                \r\n                   .@((#@&###############@@                 \r\n                     @@@@@@@@@@@@@@@@@@@@                   \r\n                                                            \r\n                                                            \r\n                                                            \r\n                                                            ";
 
             // Difficulty numbers and general flow constraints
             const int PersonalizedMode = 1;
-
             // Valid range for every character stats
             const int MinArcherHealthValue = 1500, MaxArcherHealthValue = 2000, MinArcherAttackValue = 180, MaxArcherAttackValue = 300, MinArcherDefenseValue = 25, MaxArcherDefenseValue = 35;
             const int MinBarbarianHealthValue = 3000, MaxBarbarianHealthValue = 3750, MinBarbarianAttackValue = 150, MaxBarbarianAttackValue = 250, MinBarbarianDefenseValue = 35, MaxBarbarianDefenseValue = 45;
@@ -106,7 +111,7 @@ namespace HeroesVsMonster
 
             do // Menu de jugar o salir
             {
-                MenuOptions.PrintMainMenuOptions(mainMenuOptions);
+                MenuOptions.PrintMenuOptions(mainMenuOptions);
                 string input = Console.ReadLine() ?? "".Trim();
                 Console.ResetColor();
 
@@ -175,7 +180,7 @@ namespace HeroesVsMonster
                         tries = 3;
                         do
                         {
-                            MenuOptions.PrintDifficultyMenuOptions(difficultyOptions);
+                            MenuOptions.PrintMenuOptions(difficultyOptions);
                             string input = Console.ReadLine() ?? "".Trim();
                             Console.ResetColor();
 
@@ -284,9 +289,10 @@ namespace HeroesVsMonster
                                         do
                                         {
                                             specialAbilityValidOption = true;
+                                            GeneralUtils.DisplayCharacterIcon(turnOrder[i], MSG_BOW_ICON, MSG_AXE_ICON, MSG_MAGIC_STAFF_ICON, MSG_NATURE_ICON);
                                             Console.WriteLine($"Turno de: {names[turnOrder[i]]}");
                                             Console.WriteLine();
-                                            MenuOptions.PrintTurnMenuOptions(turnOptions);
+                                            MenuOptions.PrintMenuOptions(turnOptions);
                                             turnDecision = Convert.ToInt32(Console.ReadLine() ?? "");
                                             Console.ResetColor();
 
@@ -380,7 +386,7 @@ namespace HeroesVsMonster
                                                         Console.Write("al ");
                                                         Console.ForegroundColor = ConsoleColor.Red;
                                                         Console.WriteLine("monstruo.");
-                                                        charactersStats[IndexMonster, IndexHealth] -= TurnOptions.Attack(turnOrder[i], charactersStats, IndexMonster, IndexAttack, IndexDefense, random, names, THREE);
+                                                        charactersStats[IndexMonster, IndexHealth] -= TurnOptions.Attack(turnOrder[i], charactersStats, IndexMonster, IndexAttack, IndexDefense, names, THREE);
                                                         mageCooldown = 5;
                                                         break;
 
@@ -515,6 +521,9 @@ namespace HeroesVsMonster
                             if (allHeroesDead)
                             {
                                 Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine(MSG_LOSS_IMAGE);
+                                Console.ResetColor();
                                 Console.WriteLine(MSG_MONSTER_WON);
                                 Console.WriteLine();
                                 Console.Write(MSG_TYPE_TO_CONTINUE);
@@ -525,6 +534,9 @@ namespace HeroesVsMonster
                             else
                             {
                                 Console.Clear();
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine(MSG_WIN_IMAGE);
+                                Console.ResetColor();
                                 Console.WriteLine(MSG_HEROES_WON);
                                 Console.WriteLine();
                                 Console.Write(MSG_TYPE_TO_CONTINUE);
@@ -543,7 +555,7 @@ namespace HeroesVsMonster
 
                         do // Volver a preguntar si quiere jugar otra partida
                         {
-                            MenuOptions.PrintMainMenuOptions(mainMenuOptions);
+                            MenuOptions.PrintMenuOptions(mainMenuOptions);
                             string input = Console.ReadLine() ?? "".Trim();
                             Console.ResetColor();
 

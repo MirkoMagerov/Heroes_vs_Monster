@@ -4,13 +4,13 @@
     {
         public static int[] GetRandomTurnOrder(Random random, int archerIndex, int barbarianIndex, int mageIndex, int druidIndex, double[,] charactersStats, int IndexHealth)
         {
-            int[] randomOrder = { archerIndex, barbarianIndex, mageIndex, druidIndex };
+            int[] arrayWithIndex = { archerIndex, barbarianIndex, mageIndex, druidIndex };
             int aliveCount = 0;
 
             // Contar la cantidad de personajes vivos
-            for (int i = 0; i < randomOrder.Length; i++)
+            for (int i = 0; i < arrayWithIndex.Length; i++)
             {
-                if (charactersStats[randomOrder[i], IndexHealth] > 0)
+                if (charactersStats[arrayWithIndex[i], IndexHealth] > 0)
                 {
                     aliveCount++;
                 }
@@ -18,35 +18,35 @@
 
             if (aliveCount == 0)
             {
-                return randomOrder;
+                return arrayWithIndex;
             }
 
-            int[] finalOrder = new int[aliveCount];
+            int[] randomOrder = new int[aliveCount];
 
             int currentIndex = 0;
-            for (int i = 0; i < randomOrder.Length; i++)
+            for (int i = 0; i < arrayWithIndex.Length; i++)
             {
-                if (charactersStats[randomOrder[i], IndexHealth] > 0)
+                if (charactersStats[arrayWithIndex[i], IndexHealth] > 0)
                 {
-                    finalOrder[currentIndex] = randomOrder[i];
+                    randomOrder[currentIndex] = arrayWithIndex[i];
                     currentIndex++;
                 }
             }
 
             if (aliveCount == 1)
             {
-                return finalOrder;
+                return randomOrder;
             }
 
-            for (int i = finalOrder.Length - 1; i > 0; i--)
+            for (int i = randomOrder.Length - 1; i > 0; i--)
             {
                 int j = random.Next(0, i + 1);
 
                 // Intercambiar elementos en finalOrder
-                (finalOrder[i], finalOrder[j]) = (finalOrder[j], finalOrder[i]);
+                (randomOrder[i], randomOrder[j]) = (randomOrder[j], randomOrder[i]);
             }
 
-            return finalOrder;
+            return randomOrder;
         }
 
         public static bool CheckAbilityOnCooldown(int charIndex, int archerCooldown, int barbarianCooldown, int mageCooldown, int druidCooldown)
@@ -61,11 +61,11 @@
             };
         }
 
-        public static double MonsterTurnAttack(double[,] charStats, int monsterIndex, int heroIndex, int damage, int defense)
+        public static double MonsterTurnAttack(double[,] charStats, int monsterIndex, int heroIndex, int attackIndex, int defenseIndex)
         {
             double characterDamage;
 
-            characterDamage = Math.Max(0, Math.Round(charStats[monsterIndex, damage] - (charStats[monsterIndex, damage] * (charStats[heroIndex, defense]) / 100.0), 2));
+            characterDamage = Math.Max(0, Math.Round(charStats[monsterIndex, attackIndex] - (charStats[monsterIndex, attackIndex] * (charStats[heroIndex, defenseIndex]) / 100.0), 2));
 
             return characterDamage;
         }
@@ -82,7 +82,7 @@
 
         public static void DisplayCharactersHealthDesc(double[,] charStats, int healthIndex, string[] names)
         {
-            // Clonamos la matriz de stats y el array de nombres para no influir en las constantes de índices y en la generación de turnos aleatoria
+            // Clonamos la matriz de stats y el array de nombres para no influir en las constantes de índices y en la generación de turnos aleatoria en el código main
             double[] copyHealthStats = new double[charStats.GetLength(0) - 1];
 
             for (int i = 0; i < copyHealthStats.Length; i++)
@@ -130,6 +130,17 @@
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("esta muerto/a.");
                 }
+            }
+        }
+
+        public static void DisplayCharacterIcon(int index, string archerIcon, string barbIcon, string mageIcon, string druidIcon)
+        {
+            switch (index)
+            {
+                case 0: Console.WriteLine(archerIcon); break;
+                case 1: Console.WriteLine(barbIcon); break;
+                case 2: Console.WriteLine(mageIcon); break;
+                case 3: Console.WriteLine(druidIcon); break;
             }
         }
     }

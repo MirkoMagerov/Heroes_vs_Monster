@@ -64,7 +64,7 @@ namespace HeroesVsMonster_TurnOptions
             return attackDamage;
         }
 
-        public static double Attack(int charIndex, double[,] stats, int monsterIndex, int attack, int defense, Random random, string[] names, int multiplier) // Multiplicador de daño de la maga
+        public static double Attack(int charIndex, double[,] stats, int monsterIndex, int attack, int defense, string[] names, int multiplier) // Multiplicador de daño de la maga
         {
             const int TWO = 2;
             const double ONE_HUNDRED = 100.0;
